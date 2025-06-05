@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:newtask/home_section.dart';
+import 'themecontroller.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class MyHomePage extends StatelessWidget {
@@ -10,19 +12,38 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
+    final themeProvider = Provider.of<ThemeController>(context);
+    bool isDarkMode = themeProvider.themeMode == ThemeMode.dark;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'E-BOOK',
           style: TextStyle(
-            color: Colors.red,
+            color:
+                themeProvider.themeMode == ThemeMode.light
+                    ? Colors.red
+                    : Colors.grey,
             fontSize: 50,
             fontWeight: FontWeight.bold,
           ),
         ),
+        backgroundColor:
+            themeProvider.themeMode == ThemeMode.light
+                ? Colors.white
+                : Colors.black,
+        actions: [
+          Switch(
+            activeColor: Colors.grey,
+            value: isDarkMode,
+            onChanged: (value) {
+              themeProvider.toggleTheme(value);
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: [
+          Padding(padding: EdgeInsets.all(8.0)),
           Image.asset(
             'assets/images/books.jpeg',
             fit: BoxFit.cover,
@@ -31,19 +52,30 @@ class MyHomePage extends StatelessWidget {
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(30),
+                alignment: Alignment.center,
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                padding: EdgeInsets.all(10),
                 width: _deviceWidth,
                 height: _deviceHeight * 0.1,
-                decoration: BoxDecoration(color: Colors.white),
+                decoration: BoxDecoration(
+                  color:
+                      themeProvider.themeMode == ThemeMode.light
+                          ? Colors.white
+                          : Colors.black,
+                ),
                 child: Text(
                   'Welcome to E-Book!',
                   textAlign: TextAlign.center,
 
                   style: TextStyle(
                     fontSize: 25,
-                    color: Colors.red,
+                    color:
+                        themeProvider.themeMode == ThemeMode.light
+                            ? Colors.red
+                            : Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
